@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, defineEmits } from "vue";
+import { ref } from "vue";
 import Fail from "../icons/Fail.vue";
 import Success from "../icons/Success.vue";
 
@@ -7,59 +7,69 @@ const props = defineProps({
   numberCard: {
     type: String,
   },
-  word: {
+  contentCardForeign: {
     type: String,
   },
-  translation: {
-    type: String,
-  },
-  state: {
-    type: String,
-  },
-  status: {
+  contentCardTranslate: {
     type: String,
   },
 });
-const emit = defineEmits(["update:status", "update:state"]);
 
-function openedCard() {
-  emit("update:state", "opened");
+let isFlipped = ref(false);
+let status = ref("");
+
+const emit = defineEmits({
+  viewTranslate(payload) {
+    return payload;
+  },
+  setStatus(payload) {
+    return payload;
+  },
+});
+
+function viewTranslate() {
+  isFlipped.value = true;
+  emit("viewTranslate", true);
 }
 
-function successButton() {
-  emit("update:status", "success");
-}
-
-function failButton() {
-  emit("update:status", "fail");
+function changeStat(setStatus) {
+  if (setStatus) {
+    status.value = "Да";
+  } else {
+    status.value = "Нет";
+  }
+  emit("setStatus", status.value);
 }
 </script>
 <template>
-  <div class="card-container">
+  <div class="card">
     <div class="card-number">{{ props.numberCard }}</div>
     <div class="border-card">
-      <div v-if="props.state === 'closed'">
-        <div class="card-content">{{ props.word }}</div>
-        <button class="flip-button" @click="openedCard">ПЕРЕВЕРНУТЬ</button>
+      <div v-if="!isFlipped">
+        <div class="card-content">{{ props.contentCardForeign }}</div>
+        <button class="flip-button" @click="viewTranslate">ПЕРЕВЕРНУТЬ</button>
       </div>
       <div v-else>
-        <div v-if="props.status === 'success'" class="icons-result">
-          <Success :width="39" :height="39" />
+        <div v-if="status === 'Да'" class="resultStatus">
+          <Success />
         </div>
-        <div v-else-if="props.status === 'fail'" class="icons-result">
-          <Fail :width="39" :height="39" />
+        <div v-else-if="status === ''" class="resultStatus">
+          <div></div>
         </div>
-        <div class="card-content">{{ props.translation }}</div>
+        <div v-else class="resultStatus">
+          <Fail />
+        </div>
+        <div class="card-content">{{ props.contentCardTranslate }}</div>
         <div class="icons-variable">
-          <Fail class="button-result" @click="failButton" />
-          <Success class="button-result" @click="successButton" />
+          <Fail class="button-result" @click="changeStat(false)" />
+          <Success class="button-result" @click="changeStat(true)" />
         </div>
       </div>
     </div>
   </div>
 </template>
 <style scoped>
-.card-container {
+.card {
   border-radius: 16px;
   width: 250px;
   height: 376px;
@@ -87,14 +97,6 @@ function failButton() {
   font-weight: 400;
   color: var(--color-card);
   background: var(--color-primary);
-}
-
-.icons-result {
-  position: absolute;
-  top: 9px;
-  left: 105px;
-  width: 39px;
-  height: 39px;
 }
 
 .card-content {
@@ -140,5 +142,15 @@ function failButton() {
 
 .button-result {
   cursor: pointer;
+}
+
+.resultStatus {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 15px;
+  left: 109px;
+  width: 36px;
+  height: 36px;
 }
 </style>
