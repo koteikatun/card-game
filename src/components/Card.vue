@@ -40,6 +40,7 @@ function changeStat(setStatus) {
   }
   emit("setStatus", status.value);
 }
+
 </script>
 <template>
   <div class="card">
@@ -51,24 +52,45 @@ function changeStat(setStatus) {
       </div>
       <div v-else>
         <div v-if="status === 'Да'" class="resultStatus">
-          <Success />
+          <Success :width="36" :height="36" />
         </div>
         <div v-else-if="status === ''" class="resultStatus">
           <div></div>
         </div>
         <div v-else class="resultStatus">
-          <Fail />
+          <Fail :width="36" :height="36" />
         </div>
         <div class="card-content">{{ props.contentCardTranslate }}</div>
-        <div class="icons-variable">
+        <div v-if="status === ''" class="icons-variable">
           <Fail class="button-result" @click="changeStat(false)" />
           <Success class="button-result" @click="changeStat(true)" />
+        </div>
+        <div v-else class="finally">
+          ЗАВЕРШЕНО
         </div>
       </div>
     </div>
   </div>
 </template>
 <style scoped>
+.finally {
+  border: none;
+  width: 97px;
+  height: 18px;
+  background: var(--color-primary);
+  position: absolute;
+  bottom: 19px;
+  left: 80px;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 150%;
+  letter-spacing: 0.12em;
+  color: var(--color-font);
+  text-align: center;
+  align-items: center;
+}
+
 .card {
   border-radius: 16px;
   width: 250px;
@@ -81,6 +103,7 @@ function changeStat(setStatus) {
   align-items: center;
   justify-content: center;
 }
+
 .border-card {
   border: 1px solid #cce8ff;
   border-radius: 12px;
@@ -88,6 +111,7 @@ function changeStat(setStatus) {
   height: 320px;
   margin: 28px 19px;
 }
+
 .card-number {
   position: absolute;
   top: 20px;
