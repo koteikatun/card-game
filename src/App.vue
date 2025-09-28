@@ -1,31 +1,38 @@
 <script setup>
+import { onMounted, ref } from 'vue';
 import Button from "./components/Button.vue";
 import Card from "./components/Card.vue";
 import Headers from "./components/Headers.vue";
 
-const cards = [
-  {
-    contentCardForeign: "Fox",
-    contentCardTranslate: "Лиса",
-    numberCard: "01",
-  },
-  {
-    contentCardForeign: "Flowers",
-    contentCardTranslate: "Цветы",
-    numberCard: "02",
-  },
-];
+const API_ENDPOINT = "http://localhost:8080/api/random-words";
+
+let data = ref();
+let start = ref(false);
+
+async function getRandomWords() {
+  const res = await fetch(API_ENDPOINT);
+  data.value = await res.json();
+}
+
+function changeStateGame(startGame) {
+  start.value = startGame;
+}
+
+onMounted(() => {
+  getRandomWords();
+})
+
 </script>
 
 <template>
   <div class="main">
     <Headers />
-    <div class="buttons">
-      <Button />
+    <div v-if="!start" class="buttons">
+      <Button @start-game="changeStateGame" />
     </div>
-    <div class="displaycard">
-      <div v-for="(card, index) in cards" :key="index">
-        <Card v-bind="card" />
+    <div v-else class="display-card">
+      <div v-for="(word, index) in data" :key="index">
+        <Card :content-card-foreign="word.word" :number-card="index" :content-card-translate="word.translation" />
       </div>
     </div>
   </div>
@@ -35,11 +42,13 @@ const cards = [
 .main {
   height: 100vh;
 }
+
 .buttons {
   display: flex;
   justify-content: center;
 }
-.displaycard {
+
+.display-card {
   margin-top: 2%;
   display: flex;
   flex-wrap: wrap;

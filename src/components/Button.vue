@@ -1,21 +1,21 @@
 <script setup>
 const emit = defineEmits({
-  startGame(payload) {
+  'start-game'(payload) {
     return payload;
   },
 });
 
 function startGame() {
-  emit("startGame", true);
+  emit("start-game", true);
 }
 </script>
 
 <template>
-  <button class="button" @click="startGame()">Начать игру</button>
+  <button class="btn" @click="startGame()">Начать игру</button>
 </template>
 
 <style scoped>
-.button {
+.btn {
   border: none;
   border-radius: 100px;
   /* padding: 16px 10px; */
