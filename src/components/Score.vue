@@ -1,17 +1,13 @@
 <script setup>
+import { inject } from "vue";
 import Heart from "../icons/Heart.vue";
 
-const props = defineProps({
-  number: {
-    type: Number,
-    default: 100,
-  },
-});
+const score = inject('score');
 </script>
 
 <template>
   <div class="headers-hearts">
-    <div class="number">{{ props.number }}</div>
+    <div class="number">{{ score }}</div>
     <Heart />
   </div>
 </template>
