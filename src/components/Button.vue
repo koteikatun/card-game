@@ -1,17 +1,27 @@
 <script setup>
-const emit = defineEmits({
-  'start-game'(payload) {
-    return payload;
-  },
-});
+import { computed } from 'vue'
 
-function startGame() {
-  emit("start-game", true);
-}
+const props = defineProps({
+  mode: {
+    type: String,
+    default: 'start', // 'start' | 'restart'
+    validator: (value) => ['start', 'restart'].includes(value)
+  }
+})
+
+const emit = defineEmits(['action'])
+
+const buttonText = computed(() =>
+  props.mode === 'start' ? 'Начать игру' : 'Начать заново'
+)
+
+const actionType = computed(() =>
+  props.mode === 'start' ? 'start' : 'restart'
+)
 </script>
 
 <template>
-  <button class="btn" @click="startGame()">Начать игру</button>
+  <button class="btn" @click="$emit('action', actionType)">{{ buttonText }}</button>
 </template>
 
 <style scoped>
